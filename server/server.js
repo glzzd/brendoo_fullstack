@@ -9,6 +9,7 @@ const errorHandler = require('./src/middleware/errorHandler');
 const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const storeRoutes = require('./src/routes/storeRoutes');
+const gosportRoutes = require('./src/routes/gosportRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,13 +21,13 @@ connectDB();
 app.use(helmet());
 app.use(cors());
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
-});
-app.use(limiter);
+// Rate limiting - DISABLED for development
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: process.env.NODE_ENV === 'production' ? 100 : 1000, // Higher limit for development
+//   message: 'Too many requests from this IP, please try again later.'
+// });
+// app.use(limiter);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -36,6 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/stores', storeRoutes);
+app.use('/api/GoSport', gosportRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

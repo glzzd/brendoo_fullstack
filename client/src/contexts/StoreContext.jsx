@@ -108,7 +108,7 @@ export const StoreProvider = ({ children }) => {
   }, []);
 
   // Get single store
-  const getStore = async (id) => {
+  const getStore = useCallback(async (id) => {
     try {
       dispatch({ type: STORE_ACTIONS.SET_LOADING, payload: true });
       const response = await storeService.getStore(id);
@@ -124,7 +124,7 @@ export const StoreProvider = ({ children }) => {
       dispatch({ type: STORE_ACTIONS.SET_ERROR, payload: error.message });
       return null;
     }
-  };
+  }, []);
 
   // Create store
   const createStore = async (storeData) => {

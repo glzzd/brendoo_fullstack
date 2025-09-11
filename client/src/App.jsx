@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import StoreList from './pages/stores/StoreList';
+import StoreDetail from './pages/stores/StoreDetail';
 
 function App() {
   return (
@@ -57,6 +58,17 @@ function App() {
                   <PrivateRoute>
                     <MainLayout key="stores-list">
                       <StoreList />
+                    </MainLayout>
+                  </PrivateRoute>
+                } 
+              />
+              
+              <Route 
+                path="/stores/:id" 
+                element={
+                  <PrivateRoute>
+                    <MainLayout key="store-detail">
+                      <StoreDetail />
                     </MainLayout>
                   </PrivateRoute>
                 } 

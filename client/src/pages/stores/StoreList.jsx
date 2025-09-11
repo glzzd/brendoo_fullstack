@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Store, Globe, Edit, Trash2, Search, CheckCircle, XCircle } from 'lucide-react';
 import { useStore } from '../../contexts/StoreContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -18,13 +19,19 @@ import AddStoreModal from '../../components/AddStoreModal';
 import { usePageTitle } from '@/hooks/usePageTitle';
 
 const StoreList = () => {
-  const { stores, loading, error, deleteStore, clearError } = useStore();
+  const { stores, loading, error, deleteStore, clearError, getStores } = useStore();
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStore, setSelectedStore] = useState(null);
   const [storeToDelete, setStoreToDelete] = useState(null);
   usePageTitle('storeList');
+
+  // Fetch stores when component mounts
+  useEffect(() => {
+    getStores();
+  }, [getStores]);
 
   // Filter stores based on search term
   const filteredStores = stores.filter(store =>
@@ -50,6 +57,10 @@ const StoreList = () => {
   const handleEditStore = (store) => {
     setSelectedStore(store);
     setIsModalOpen(true);
+  };
+
+  const handleStoreClick = (storeId) => {
+    navigate(`/stores/${storeId}`);
   };
 
   const handleCloseModal = () => {
@@ -142,7 +153,8 @@ const StoreList = () => {
           {filteredStores.map((store) => (
             <div
               key={store._id}
-              className="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200"
+              onClick={() => handleStoreClick(store._id)}
+              className="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
             >
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
