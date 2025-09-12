@@ -28,7 +28,7 @@ const ProductModal = ({ isOpen, onClose, brandName, brandUrl, products, loading,
             <Package className="h-6 w-6 text-blue-600" />
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                {brandName} Məhsulları
+                {brandName} Məhsulları {products && products.length > 0 && `(${products.length} məhsul)`}
               </h2>
               {brandUrl && (
                 <button

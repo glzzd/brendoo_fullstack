@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Store, Globe, Edit, Trash2, CheckCircle, XCircle, MapPin, Phone, Mail, Tag } from 'lucide-react';
+import { ArrowLeft, Store, Globe, Edit, Trash2, CheckCircle, XCircle, MapPin, Phone, Mail, Tag, Download } from 'lucide-react';
 import { useStore } from '../../contexts/StoreContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useBulkFetch } from '../../contexts/BulkFetchContext';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,8 +20,8 @@ import {
 import AddStoreModal from '../../components/AddStoreModal';
 import BrandCard from '../../components/BrandCard';
 import ProductModal from '../../components/ProductModal';
-import brandService from '../../api/brandService';
-import productService from '../../api/productService';
+import brandService from '../../services/brandService';
+import productService from '../../services/productService';
 import { usePageTitle } from '@/hooks/usePageTitle';
 
 const StoreDetail = () => {
@@ -27,6 +29,7 @@ const StoreDetail = () => {
   const navigate = useNavigate();
   const { currentStore, loading, error, getStore, deleteStore, clearError } = useStore();
   const { t } = useLanguage();
+  const { startAllBrandsFetch, isActive: isBulkFetching } = useBulkFetch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [storeToDelete, setStoreToDelete] = useState(null);
   const [brands, setBrands] = useState({});
@@ -39,15 +42,29 @@ const StoreDetail = () => {
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(false);
   const [productsError, setProductsError] = useState(null);
+  
   usePageTitle('storeDetail');
 
-  // Fetch brands from GoSport API
+  // Fetch brands from GoSport scraper API
   const fetchBrands = useCallback(async () => {
     setBrandsLoading(true);
     setBrandsError(null);
     try {
-      const brandsData = await brandService.getBrands();
-      setBrands(brandsData);
+      // Use new scraper service
+      const brandsData = await brandService.getScraperAllBrands();
+      if (brandsData.success && brandsData.data) {
+        // Convert array to object format for compatibility, including imageUrl
+        const brandsObject = {};
+        brandsData.data.forEach(brand => {
+          brandsObject[brand.name] = {
+            url: brand.url,
+            imageUrl: brand.imageUrl
+          };
+        });
+        setBrands(brandsObject);
+      } else {
+        throw new Error(brandsData.message || 'Failed to fetch brands');
+      }
     } catch (error) {
       console.error('Error fetching brands:', error);
       setBrandsError('Brendlər yüklənərkən xəta baş verdi');
@@ -57,12 +74,17 @@ const StoreDetail = () => {
   }, []);
 
   // Fetch products by brand URL
-  const fetchProducts = useCallback(async (brandUrl) => {
+  const fetchProducts = useCallback(async (brandUrl, brandName) => {
     setProductsLoading(true);
     setProductsError(null);
     try {
-      const productsData = await productService.getProductsByBrand(brandUrl);
-      setProducts(productsData);
+      // Use new scraper service
+      const productsData = await productService.getScraperProductsByBrand(brandUrl, brandName);
+      if (productsData.success && productsData.data) {
+        setProducts(productsData.data);
+      } else {
+        throw new Error(productsData.message || 'Failed to fetch products');
+      }
     } catch (error) {
       console.error('Error fetching products:', error);
       setProductsError('Məhsullar yüklənərkən xəta baş verdi');
@@ -72,10 +94,11 @@ const StoreDetail = () => {
   }, []);
 
   // Handle brand card click to open product modal
-  const handleBrandClick = useCallback((brandName, brandUrl) => {
+  const handleBrandClick = useCallback((brandName, brandData) => {
+    const brandUrl = typeof brandData === 'object' ? brandData.url : brandData;
     setSelectedBrand({ name: brandName, url: brandUrl });
     setIsProductModalOpen(true);
-    fetchProducts(brandUrl);
+    fetchProducts(brandUrl, brandName);
   }, [fetchProducts]);
 
   // Handle product modal close
@@ -85,6 +108,11 @@ const StoreDetail = () => {
     setProducts([]);
     setProductsError(null);
   }, []);
+
+  // Handle bulk fetch using context - fetch all products from all brands
+  const handleBulkFetch = useCallback(() => {
+    startAllBrandsFetch(id);
+  }, [startAllBrandsFetch, id]);
 
   useEffect(() => {
     if (id) {
@@ -340,11 +368,30 @@ const StoreDetail = () => {
       {/* Categories Section */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 mt-6">
         <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-3">
-            <Tag className="h-6 w-6 text-blue-600" />
-            <h2 className="text-xl font-semibold text-gray-900">
-              {t('categories') || 'Kategoriler'}
-            </h2>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Tag className="h-6 w-6 text-blue-600" />
+              <h2 className="text-xl font-semibold text-gray-900">
+                {t('categories') || 'Kategoriler'}
+              </h2>
+            </div>
+            <Button
+              onClick={handleBulkFetch}
+              disabled={isBulkFetching}
+              className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isBulkFetching ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Çekiliyor...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4" />
+                  Tüm Ürünleri Çek
+                </>
+              )}
+            </Button>
           </div>
         </div>
         
@@ -369,13 +416,15 @@ const StoreDetail = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {console.log(brands)
               }
-              {Object.entries(brands).map(([brandName, brandUrl]) => {
-                const safeUrl = typeof brandUrl === 'string' ? brandUrl.trim().replace(/"/g, '') : String(brandUrl || '').replace(/"/g, '');
+              {Object.entries(brands).map(([brandName, brandData]) => {
+                const safeUrl = typeof brandData === 'object' ? brandData.url : (typeof brandData === 'string' ? brandData.trim().replace(/"/g, '') : String(brandData || '').replace(/"/g, ''));
+                const imageUrl = typeof brandData === 'object' ? brandData.imageUrl : null;
                 return (
                   <BrandCard 
                     key={brandName}
                     brandName={brandName}
                     brandUrl={safeUrl}
+                    imageUrl={imageUrl}
                     onProductsClick={handleBrandClick}
                   />
                 );
@@ -389,6 +438,8 @@ const StoreDetail = () => {
           )}
         </div>
       </div>
+
+
 
       {/* Edit Store Modal */}
       <AddStoreModal

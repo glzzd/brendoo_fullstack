@@ -1,15 +1,21 @@
 const express = require('express');
 const {
-  getBrands,
-  getProducts,
-  getCategories
+  getScrapedBrands,
+  getAllScrapedBrands,
+  getScraperBrands,
+  getScraperAllBrands,
+  getScraperProductsByBrand
 } = require('../controllers/gosportController');
 
 const router = express.Router();
 
-// GoSport API routes - no authentication required for external API proxy
-router.get('/brands', getBrands);
-router.get('/products', getProducts);
-router.get('/categories', getCategories);
+// GoSport scraper routes
+router.get('/scraped-brands', getScrapedBrands);
+router.get('/all-scraped-brands', getAllScrapedBrands);
+
+// New scraper endpoints
+router.get('/scraper-brands', getScraperBrands);
+router.get('/scraper-all-brands', getScraperAllBrands);
+router.get('/scraper-products/:brandUrl', getScraperProductsByBrand);
 
 module.exports = router;

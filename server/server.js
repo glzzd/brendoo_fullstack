@@ -1,25 +1,35 @@
 const express = require('express');
+const http = require('http');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const connectDB = require('./src/config/database');
+const socketManager = require('./src/config/socket');
 const errorHandler = require('./src/middleware/errorHandler');
+const bulkFetchWorker = require('./src/workers/bulkFetchWorker');
 const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const storeRoutes = require('./src/routes/storeRoutes');
 const gosportRoutes = require('./src/routes/gosportRoutes');
+const bulkFetchRoutes = require('./src/routes/bulkFetchRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const server = http.createServer(app);
+const PORT = process.env.PORT || 3001;
 
 // Connect to MongoDB
 connectDB();
 
 // Security middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5001', 'http://localhost:3001'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Rate limiting - DISABLED for development
 // const limiter = rateLimit({
@@ -37,7 +47,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/stores', storeRoutes);
-app.use('/api/GoSport', gosportRoutes);
+app.use('/api/gosport', gosportRoutes);
+app.use('/api/bulk-fetch', bulkFetchRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -59,8 +70,19 @@ app.use('*', (req, res) => {
 // Error handling middleware (should be last)
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+server.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT}`);
+  
+  // Initialize Socket.IO
+  socketManager.initialize(server);
+  
+  // Start bulk fetch worker
+  try {
+    await bulkFetchWorker.start();
+    console.log('🚀 Bulk fetch worker started successfully');
+  } catch (error) {
+    console.error('❌ Failed to start bulk fetch worker:', error);
+  }
 });
 
 module.exports = app;

@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { StoreProvider } from './contexts/StoreContext';
+import { BulkFetchProvider } from './contexts/BulkFetchContext';
+import { SocketProvider } from './contexts/SocketContext';
 import { PrivateRoute, PublicRoute } from './components/ProtectedRoute';
 import MainLayout from './components/MainLayout';
 import Login from './pages/auth/Login';
@@ -11,13 +13,18 @@ import NotFound from './pages/NotFound';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import StoreList from './pages/stores/StoreList';
 import StoreDetail from './pages/stores/StoreDetail';
+import { Toaster } from 'sonner';
+import BulkFetchToast from './components/BulkFetchToast';
+import BulkFetchModal from './components/BulkFetchModal';
 
 function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <StoreProvider>
-          <Router>
+        <SocketProvider>
+          <StoreProvider>
+            <BulkFetchProvider>
+            <Router>
           <div className="App">
             <Routes>
 
@@ -80,9 +87,16 @@ function App() {
                 />
             </Routes>
           </div>
-          </Router>
-        </StoreProvider>
+            </Router>
+            
+            {/* Global Components */}
+            <BulkFetchToast />
+            <BulkFetchModal />
+            </BulkFetchProvider>
+          </StoreProvider>
+        </SocketProvider>
       </AuthProvider>
+      <Toaster position="top-right" richColors />
     </LanguageProvider>
   );
 }

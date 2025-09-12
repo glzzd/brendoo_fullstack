@@ -96,6 +96,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    token: authService.getToken(),
     login,
     logout,
     isAuthenticated,

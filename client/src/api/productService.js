@@ -1,33 +1,12 @@
-import { buildApiUrl } from './externalApiConfig';
+// ProductService temporarily disabled - old GoSport API removed
+// TODO: Implement new gosport-scraper integration
 
 class ProductService {
-  // Get products by brand URL from GoSport API
   async getProductsByBrand(brandUrl) {
-    try {
-      const apiUrl = buildApiUrl('GOSPORT', 'PRODUCTS');
-      const response = await fetch(`${apiUrl}?href=${encodeURIComponent(brandUrl)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error fetching products by brand:', error);
-      throw error;
-    }
+    throw new Error('Product service temporarily disabled - awaiting new scraper implementation');
   }
 }
 
-// Create and export a singleton instance
 const productService = new ProductService();
 export default productService;
-
-// Export the class as well for potential direct usage
 export { ProductService };

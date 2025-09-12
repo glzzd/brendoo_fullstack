@@ -170,7 +170,7 @@ npm test           # Test çalıştır
 ### Postman Collection
 API'yi test etmek için Postman collection'ı oluşturabilirsiniz:
 
-1. Base URL: `http://localhost:5000/api`
+1. Base URL: `http://localhost:3000/api`
 2. Authentication header'ı ekleyin
 3. Endpoint'leri test edin
 
@@ -178,17 +178,17 @@ API'yi test etmek için Postman collection'ı oluşturabilirsiniz:
 
 ```bash
 # Kullanıcı kaydı
-curl -X POST http://localhost:5000/api/auth/register \
+curl -X POST http://localhost:3000/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"name":"John Doe","email":"john@example.com","password":"Password123"}'
 
 # Kullanıcı girişi
-curl -X POST http://localhost:5000/api/auth/login \
+curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"john@example.com","password":"Password123"}'
 
 # Profil bilgileri (token gerekli)
-curl -X GET http://localhost:5000/api/auth/me \
+curl -X GET http://localhost:3000/api/auth/me \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 

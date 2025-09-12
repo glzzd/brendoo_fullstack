@@ -5,11 +5,13 @@
 const EXTERNAL_API_CONFIG = {
   // GoSport API Configuration
   GOSPORT: {
-    BASE_URL: 'http://localhost:3000/api/GoSport',
+    BASE_URL: 'http://localhost:3001/api/gosport',
     ENDPOINTS: {
-      BRANDS: '/brands',
-      PRODUCTS: '/products',
-      CATEGORIES: '/categories'
+      SCRAPED_BRANDS: '/scraped-brands',
+      ALL_SCRAPED_BRANDS: '/all-scraped-brands',
+      SCRAPER_BRANDS: '/scraper-brands',
+      SCRAPER_ALL_BRANDS: '/scraper-all-brands',
+      SCRAPER_PRODUCTS: '/scraper-products'
     }
   },
   
@@ -38,4 +40,5 @@ export const buildApiUrl = (apiName, endpoint) => {
   return `${apiConfig.BASE_URL}${endpointPath}`;
 };
 
+export { EXTERNAL_API_CONFIG as externalApiConfig };
 export default EXTERNAL_API_CONFIG;
