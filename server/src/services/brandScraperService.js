@@ -1,11 +1,13 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const https = require('https');
+const CacheService = require('./cacheService');
 
 class BrandScraperService {
   constructor() {
     this.baseUrl = 'https://www.gosport.az';
     this.brandsUrl = 'https://www.gosport.az/brands';
+    this.cacheService = new CacheService();
     
     // Disable SSL certificate verification
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -39,8 +41,17 @@ class BrandScraperService {
           console.log(`📄 No brands found on page ${currentPage}, stopping...`);
           hasMorePages = false;
         } else {
-          allBrands.push(...pageBrands);
-          console.log(`✅ Found ${pageBrands.length} brands on page ${currentPage}`);
+          // Filter out duplicates before adding to allBrands
+          const existingUrls = allBrands.map(brand => brand.url);
+          const newBrands = pageBrands.filter(brand => !existingUrls.includes(brand.url));
+          
+          allBrands.push(...newBrands);
+          console.log(`✅ Found ${pageBrands.length} brands on page ${currentPage} (${newBrands.length} new, ${pageBrands.length - newBrands.length} duplicates)`);
+          
+          // If no new brands found, might be reaching end of unique content
+          if (newBrands.length === 0) {
+            console.log(`⚠️ No new brands found on page ${currentPage}, all were duplicates`);
+          }
           
           // Check if there are more pages by looking for next page link
           hasMorePages = await this.hasNextPage(pageUrl, currentPage);
@@ -55,7 +66,36 @@ class BrandScraperService {
       }
       
       console.log(`🎉 Brand scraping completed! Total brands found: ${allBrands.length}`);
-      return allBrands;
+      
+      // Cache'e kategorileri kaydet (duplicate kontrolü ile)
+      const storeName = 'gosport';
+      
+      // Remove duplicates based on name and URL with better logic
+      const uniqueBrands = [];
+      const seenKeys = new Set();
+      
+      for (const brand of allBrands) {
+        // Create a unique key combining name and URL
+        const key = `${brand.name.toLowerCase().trim()}-${brand.url}`;
+        if (!seenKeys.has(key)) {
+          seenKeys.add(key);
+          uniqueBrands.push(brand);
+        }
+      }
+      
+      console.log(`🎯 Removed ${allBrands.length - uniqueBrands.length} duplicate brands`);
+      console.log(`✅ Final unique brands count: ${uniqueBrands.length}`);
+      
+      const categories = uniqueBrands.map(brand => ({
+        name: brand.name,
+        url: brand.url,
+        brandId: brand.brandId,
+        scrapedAt: new Date().toISOString()
+      }));
+      
+      this.cacheService.saveStoreCategories(storeName, categories);
+      
+      return uniqueBrands;
       
     } catch (error) {
       console.error('❌ Error in scrapeAllBrands:', error.message);
@@ -121,10 +161,12 @@ class BrandScraperService {
       const brands = [];
       
       // Extract brand links
+      console.log(`🔍 Looking for brand links on page ${pageNumber}...`);
       $('a[href*="/brand/"]').each((index, element) => {
         const $el = $(element);
         const href = $el.attr('href');
         const name = $el.text().trim();
+        console.log(`   Found link: "${name}" -> ${href}`);
         
         // Skip empty names or navigation links
         if (name && name !== 'Brendlər' && href && href.includes('/brand/')) {

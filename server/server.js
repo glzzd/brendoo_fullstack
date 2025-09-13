@@ -12,6 +12,8 @@ const bulkFetchWorker = require('./src/workers/bulkFetchWorker');
 const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const storeRoutes = require('./src/routes/storeRoutes');
+const productRoutes = require('./src/routes/productRoutes');
+const categoryRoutes = require('./src/routes/categoryRoutes');
 const gosportRoutes = require('./src/routes/gosportRoutes');
 const bulkFetchRoutes = require('./src/routes/bulkFetchRoutes');
 
@@ -47,6 +49,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/stores', storeRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/gosport', gosportRoutes);
 app.use('/api/bulk-fetch', bulkFetchRoutes);
 

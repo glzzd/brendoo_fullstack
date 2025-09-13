@@ -2,6 +2,7 @@ import React from 'react';
 import { Menu, X, User, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSocket } from '../contexts/SocketContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -9,6 +10,7 @@ import { Link } from 'react-router-dom';
 const Header = ({ toggleSidebar, sidebarOpen }) => {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
+  const { isConnected } = useSocket();
 
   const handleLogout = () => {
     logout();
@@ -45,12 +47,24 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
           {/* User Menu */}
           <div className="flex items-center space-x-3">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-[#0B4F88] rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-white" />
+              <div className="relative">
+                <div className="w-8 h-8 bg-[#0B4F88] rounded-full flex items-center justify-center">
+                  <User className="h-4 w-4 text-white" />
+                </div>
+                <div className={`absolute -top-1 -right-1 w-3 h-3 border-2 border-white rounded-full ${
+                  isConnected ? 'bg-green-500' : 'bg-red-500'
+                }`}></div>
               </div>
-              <span className="text-sm font-medium text-gray-700">
-                {user?.name || user?.username || t('user')}
-              </span>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-gray-700">
+                  {user?.name || user?.username || t('user')}
+                </span>
+                <span className={`text-xs ${
+                  isConnected ? 'text-green-600' : 'text-red-600'
+                }`}>
+                  {isConnected ? 'Online' : 'Offline'}
+                </span>
+              </div>
             </div>
             
             <Button

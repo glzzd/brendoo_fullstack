@@ -9,11 +9,11 @@ const {
 
 const router = express.Router();
 
-// GoSport scraper routes
+// GoSport scraper routes - PUBLIC ACCESS (no auth required)
 router.get('/scraped-brands', getScrapedBrands);
 router.get('/all-scraped-brands', getAllScrapedBrands);
 
-// New scraper endpoints
+// New scraper endpoints - PUBLIC ACCESS (no auth required)
 router.get('/scraper-brands', getScraperBrands);
 router.get('/scraper-all-brands', getScraperAllBrands);
 router.get('/scraper-products/:brandUrl', getScraperProductsByBrand);

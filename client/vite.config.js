@@ -9,7 +9,13 @@ import path from "path"
 export default defineConfig({
   plugins: [tailwindcss(), react()],
   server: {
-    port: 5001
+    port: 5001,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true
+      }
+    }
   },
    resolve: {
     alias: {

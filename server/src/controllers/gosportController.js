@@ -16,6 +16,8 @@ exports.getScrapedBrands = asyncHandler(async (req, res, next) => {
   const { page = 1, limit = 50 } = req.query;
   
   try {
+    // Always clear cache to get fresh data
+    brandScraper.clearCache();
     const brands = await brandScraper.scrapeBrands(parseInt(page), parseInt(limit));
     
     res.status(200).json({
@@ -33,6 +35,8 @@ exports.getScrapedBrands = asyncHandler(async (req, res, next) => {
 // @access  Public
 exports.getAllScrapedBrands = asyncHandler(async (req, res, next) => {
   try {
+    // Always clear cache to get fresh data
+    brandScraper.clearCache();
     const allBrands = await brandScraper.scrapeAllBrands();
     
     res.status(200).json({
@@ -77,10 +81,8 @@ exports.getScraperAllBrands = asyncHandler(async (req, res, next) => {
   try {
     console.log('🔍 Getting all brands from GoSport scraper...');
     
-    // Check if cache should be cleared
-    if (req.query.clearCache === 'true') {
-      goSportScraper.brandScraper.clearCache();
-    }
+    // Always clear cache to get fresh data
+    goSportScraper.brandScraper.clearCache();
     
     const brands = await goSportScraper.getAllBrands();
     

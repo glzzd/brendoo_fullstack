@@ -1,4 +1,6 @@
+const mongoose = require('mongoose');
 const Store = require('../models/Store');
+const Product = require('../models/Product');
 const asyncHandler = require('../middleware/asyncHandler');
 const ErrorResponse = require('../utils/errorResponse');
 
@@ -12,6 +14,70 @@ exports.getStores = asyncHandler(async (req, res, next) => {
     success: true,
     count: stores.length,
     data: stores
+  });
+});
+
+
+
+// @desc    Get store products
+// @route   GET /api/stores/:id/products
+// @access  Private
+exports.getStoreProducts = asyncHandler(async (req, res, next) => {
+  const store = await Store.findById(req.params.id);
+  
+  if (!store) {
+    return next(new ErrorResponse(`Store not found with id of ${req.params.id}`, 404));
+  }
+  
+  const products = await Product.find({ store: req.params.id, isActive: true })
+    .populate('store', 'name website')
+    .sort({ createdAt: -1 });
+  
+  res.status(200).json({
+    success: true,
+    count: products.length,
+    data: products
+  });
+});
+
+// @desc    Get store inventory stats
+// @route   GET /api/stores/:id/stats
+// @access  Private
+exports.getStoreStats = asyncHandler(async (req, res, next) => {
+  const store = await Store.findById(req.params.id);
+  
+  if (!store) {
+    return next(new ErrorResponse(`Store not found with id of ${req.params.id}`, 404));
+  }
+  
+  const totalProducts = await Product.countDocuments({ store: req.params.id, isActive: true });
+  const inStockProducts = await Product.countDocuments({ store: req.params.id, isActive: true, inStock: true });
+  const outOfStockProducts = await Product.countDocuments({ store: req.params.id, isActive: true, inStock: false });
+  const limitedStockProducts = await Product.countDocuments({ store: req.params.id, isActive: true, stockStatus: 'limited_stock' });
+  
+  const totalStockValue = await Product.aggregate([
+    { $match: { store: mongoose.Types.ObjectId(req.params.id), isActive: true } },
+    { $group: { _id: null, total: { $sum: '$totalStock' } } }
+  ]);
+  
+  res.status(200).json({
+    success: true,
+    data: {
+      store: {
+        id: store._id,
+        name: store.name,
+        website: store.website
+      },
+      products: {
+        total: totalProducts,
+        inStock: inStockProducts,
+        outOfStock: outOfStockProducts,
+        limitedStock: limitedStockProducts
+      },
+      inventory: {
+        totalStock: totalStockValue[0]?.total || 0
+      }
+    }
   });
 });
 

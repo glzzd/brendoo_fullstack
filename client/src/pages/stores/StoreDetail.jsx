@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Store, Globe, Edit, Trash2, CheckCircle, XCircle, MapPin, Phone, Mail, Tag, Download } from 'lucide-react';
+import { ArrowLeft, Store, Globe, Edit, Trash2, CheckCircle, XCircle, MapPin, Phone, Mail, Tag, Download, RefreshCw } from 'lucide-react';
 import { useStore } from '../../contexts/StoreContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useBulkFetch } from '../../contexts/BulkFetchContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import {
@@ -30,6 +31,7 @@ const StoreDetail = () => {
   const { currentStore, loading, error, getStore, deleteStore, clearError } = useStore();
   const { t } = useLanguage();
   const { startAllBrandsFetch, isActive: isBulkFetching } = useBulkFetch();
+  const { user, isLoading: authLoading } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [storeToDelete, setStoreToDelete] = useState(null);
   const [brands, setBrands] = useState({});
@@ -42,6 +44,9 @@ const StoreDetail = () => {
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(false);
   const [productsError, setProductsError] = useState(null);
+  
+  // Category sync states
+  const [categorySyncLoading, setCategorySyncLoading] = useState(false);
   
   usePageTitle('storeDetail');
 
@@ -113,6 +118,56 @@ const StoreDetail = () => {
   const handleBulkFetch = useCallback(() => {
     startAllBrandsFetch(id);
   }, [startAllBrandsFetch, id]);
+
+  // Handle category synchronization
+  const handleCategorySync = useCallback(async () => {
+    if (!user) {
+      toast.error('Lütfen önce giriş yapın!');
+      return;
+    }
+    
+    setCategorySyncLoading(true);
+    try {
+      const response = await fetch(`/api/categories/sync/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Response is not JSON');
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        toast.success(`Stoka ${data.addedCount} yeni kateqoriya əlavə edildi!`);
+        // Refresh brands/categories after sync
+        fetchBrands();
+      } else {
+        toast.error(data.message || 'Kateqoriya sinxronizasiyası uğursuz oldu!');
+      }
+    } catch (error) {
+      console.error('Category sync error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+      toast.error('Kategori senkronizasyonu sırasında hata oluştu!');
+    } finally {
+      setCategorySyncLoading(false);
+    }
+  }, [id, fetchBrands]);
+
+
 
   useEffect(() => {
     if (id) {
@@ -375,23 +430,43 @@ const StoreDetail = () => {
                 {t('categories') || 'Kategoriler'}
               </h2>
             </div>
-            <Button
-              onClick={handleBulkFetch}
-              disabled={isBulkFetching}
-              className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isBulkFetching ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  Çekiliyor...
-                </>
-              ) : (
-                <>
-                  <Download className="h-4 w-4" />
-                  Tüm Ürünleri Çek
-                </>
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleCategorySync}
+                disabled={categorySyncLoading}
+                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {categorySyncLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Senkronlaştırılıyor...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="h-4 w-4" />
+                    Kateqoriyaları Stok ilə sinxronlaşdır
+                  </>
+                )}
+              </Button>
+
+              <Button
+                onClick={handleBulkFetch}
+                disabled={isBulkFetching}
+                className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isBulkFetching ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Çekiliyor...
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-4 w-4" />
+                    Bütün brendlərin məhsullarını çək
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
         

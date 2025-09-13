@@ -110,11 +110,7 @@ class BrandScraper {
    */
   async scrapeAllBrands() {
     try {
-      // Check cache first
-      if (this.brandsCache && this.cacheExpiry && Date.now() < this.cacheExpiry) {
-        console.log('📦 Returning cached brands data');
-        return this.brandsCache;
-      }
+      // Cache completely disabled - always scrape fresh data
       
       console.log('🔍 Starting brand scraping from GoSport.az...');
       
@@ -170,10 +166,10 @@ class BrandScraper {
       
       console.log(`🎉 Brand scraping completed! Total unique brands: ${uniqueBrands.length}`);
       
-      // Cache the results
-      this.brandsCache = uniqueBrands;
-      this.cacheExpiry = Date.now() + this.cacheTimeout;
-      console.log('💾 Brands cached for 5 minutes');
+      // Cache disabled - no caching
+      // this.brandsCache = uniqueBrands;
+      // this.cacheExpiry = Date.now() + this.cacheTimeout;
+      // console.log('💾 Brands cached for 5 minutes');
       
       return uniqueBrands;
       

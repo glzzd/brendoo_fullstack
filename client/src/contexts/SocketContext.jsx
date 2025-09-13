@@ -35,7 +35,6 @@ export const SocketProvider = ({ children }) => {
       newSocket.on('connect', () => {
         console.log('✅ Connected to WebSocket server');
         setIsConnected(true);
-        toast.success('Real-time connection established');
       });
 
       newSocket.on('connected', (data) => {
@@ -45,9 +44,6 @@ export const SocketProvider = ({ children }) => {
       newSocket.on('disconnect', (reason) => {
         console.log('🔌 Disconnected from WebSocket server:', reason);
         setIsConnected(false);
-        if (reason !== 'io client disconnect') {
-          toast.error('Real-time connection lost');
-        }
       });
 
       newSocket.on('connect_error', (error) => {

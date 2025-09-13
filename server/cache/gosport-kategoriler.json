@@ -1,0 +1,227 @@
+{
+  "storeName": "gosport",
+  "categories": [
+    {
+      "name": "NIKE",
+      "url": "https://www.gosport.az/brand/nike-21",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "ADIDAS",
+      "url": "https://www.gosport.az/brand/adidas-20",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "PUMA",
+      "url": "https://www.gosport.az/brand/puma-22",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "ON RUNNING",
+      "url": "https://www.gosport.az/brand/on-running-311",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "SKECHERS",
+      "url": "https://www.gosport.az/brand/skechers-248",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "EA7",
+      "url": "https://www.gosport.az/brand/ea7-315",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "Converse",
+      "url": "https://www.gosport.az/brand/converse-304",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "LACOSTE",
+      "url": "https://www.gosport.az/brand/lacoste-157",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "VANS",
+      "url": "https://www.gosport.az/brand/vans-305",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "ANTA",
+      "url": "https://www.gosport.az/brand/anta-303",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "BABOLAT",
+      "url": "https://www.gosport.az/brand/babolat-30",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "BIKE ORIGINAL",
+      "url": "https://www.gosport.az/brand/bike-original-45",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "NEW BALANCE",
+      "url": "https://www.gosport.az/brand/new-balance-156",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "HAPO G",
+      "url": "https://www.gosport.az/brand/hapo-g-141",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "GO SPORT",
+      "url": "https://www.gosport.az/brand/go-sport-130",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "KANGUI",
+      "url": "https://www.gosport.az/brand/kangui-125",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "JORDAN",
+      "url": "https://www.gosport.az/brand/jordan-124",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "GARLANDO",
+      "url": "https://www.gosport.az/brand/garlando-103",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "DANSKIN",
+      "url": "https://www.gosport.az/brand/danskin-97",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "CROCS",
+      "url": "https://www.gosport.az/brand/crocs-89",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "ELITE",
+      "url": "https://www.gosport.az/brand/elite-84",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "CORNILLEAU",
+      "url": "https://www.gosport.az/brand/cornilleau-83",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "CASIO",
+      "url": "https://www.gosport.az/brand/casio-66",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "BOWFLEX",
+      "url": "https://www.gosport.az/brand/bowflex-61",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "JACK WOLFSKIN",
+      "url": "https://www.gosport.az/brand/jack-wolfskin-118",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "ASICS",
+      "url": "https://www.gosport.az/brand/asics-12",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "JOMA",
+      "url": "https://www.gosport.az/brand/joma-122",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "COLUMBIA",
+      "url": "https://www.gosport.az/brand/columbia-77",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "ATHLI-TECH",
+      "url": "https://www.gosport.az/brand/athli-tech-47",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "TOORX",
+      "url": "https://www.gosport.az/brand/toorx-244",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "HAVAIANAS",
+      "url": "https://www.gosport.az/brand/havaianas-143",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "NEW ERA",
+      "url": "https://www.gosport.az/brand/new-era-158",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "NEXTREME",
+      "url": "https://www.gosport.az/brand/nextreme-160",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "METAL BOXE",
+      "url": "https://www.gosport.az/brand/metal-boxe-178",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "MICHELIN",
+      "url": "https://www.gosport.az/brand/michelin-179",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "QUIKSILVER",
+      "url": "https://www.gosport.az/brand/quiksilver-189",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "REEBOK",
+      "url": "https://www.gosport.az/brand/reebok-192",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "ROXY",
+      "url": "https://www.gosport.az/brand/roxy-196",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "SCHWINN",
+      "url": "https://www.gosport.az/brand/schwinn-203",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "SCRAPPER",
+      "url": "https://www.gosport.az/brand/scrapper-204",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "SEATZAC",
+      "url": "https://www.gosport.az/brand/seatzac-208",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "PERUZZO",
+      "url": "https://www.gosport.az/brand/peruzzo-215",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "PROFORM",
+      "url": "https://www.gosport.az/brand/proform-225",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    },
+    {
+      "name": "SHIMANO",
+      "url": "https://www.gosport.az/brand/shimano-232",
+      "scrapedAt": "2025-09-13T14:58:49.455Z"
+    }
+  ],
+  "lastUpdated": "2025-09-13T14:58:49.455Z",
+  "totalCount": 44
+}
