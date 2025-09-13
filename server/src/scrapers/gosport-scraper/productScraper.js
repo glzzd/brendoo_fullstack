@@ -34,22 +34,48 @@ class ProductScraper {
       while (hasMorePages) {
         console.log(`📄 Scraping page ${currentPage} for ${brandName}...`);
         
-        const pageUrl = currentPage === 1 ? brandUrl : `${brandUrl}?page=${currentPage}`;
-        const pageProducts = await this.scrapeProductsFromPage(pageUrl, brandName, currentPage);
-        
-        if (pageProducts.length === 0) {
-          console.log(`📄 No products found on page ${currentPage}, stopping...`);
-          hasMorePages = false;
-        } else {
-          allProducts.push(...pageProducts);
-          console.log(`✅ Found ${pageProducts.length} products on page ${currentPage}`);
+        try {
+          const pageUrl = currentPage === 1 ? brandUrl : `${brandUrl}?page=${currentPage}`;
+          const pageProducts = await this.scrapeProductsFromPage(pageUrl, brandName, currentPage);
           
-          // Check if there are more pages
-          hasMorePages = await this.hasNextPage(pageUrl, currentPage);
+          if (pageProducts.length === 0) {
+            console.log(`📄 No products found on page ${currentPage}, stopping...`);
+            hasMorePages = false;
+          } else {
+            allProducts.push(...pageProducts);
+            console.log(`✅ Found ${pageProducts.length} products on page ${currentPage}`);
+            
+            // Check if there are more pages
+            hasMorePages = await this.hasNextPage(pageUrl, currentPage);
+            currentPage++;
+            
+            // Add delay between requests
+            await this.delay(300);
+          }
+        } catch (error) {
+          console.error(`❌ Error scraping page ${currentPage} for ${brandName}: ${error.message}`);
+          console.log(`⏭️ Skipping page ${currentPage} and continuing with next page...`);
+          
+          // Continue to next page even if current page fails
           currentPage++;
           
-          // Add delay between requests
-          await this.delay(300);
+          // Check if we should continue (avoid infinite loop)
+          if (currentPage > 200) { // Safety limit
+            console.log(`⚠️ Reached safety limit of 200 pages, stopping...`);
+            hasMorePages = false;
+          } else {
+            // Try to check if there are more pages using the original URL
+            try {
+              const basePageUrl = currentPage === 1 ? brandUrl : `${brandUrl}?page=${currentPage}`;
+              hasMorePages = await this.hasNextPage(basePageUrl, currentPage);
+            } catch (nextPageError) {
+              console.log(`⚠️ Cannot check next page, assuming no more pages...`);
+              hasMorePages = false;
+            }
+          }
+          
+          // Add delay before trying next page
+          await this.delay(500);
         }
         
         // Safety limit removed - scrape all available pages
